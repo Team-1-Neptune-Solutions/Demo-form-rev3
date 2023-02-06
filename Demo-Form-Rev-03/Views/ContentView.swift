@@ -26,6 +26,9 @@ struct ContentView: View {
     @State var note = ""
     @State var description = ""
     
+//    var error = ""
+//    var metadata = ""
+    
     var body: some View {
     
         //MARK: Home DISPLAY
@@ -160,8 +163,6 @@ struct ContentView: View {
                             .frame(height: 150, alignment: .top)
                             .overlay(Rectangle().stroke(Color.gray, lineWidth: 0.5))
                             .padding(.top )
-//                            .offset(x: 25)
-                        
 
                         
                             Spacer()
@@ -170,12 +171,6 @@ struct ContentView: View {
                             //Call
                             model.addData(tempIn: tempIn, tempOut: tempOut, comments: comments)
                
-                            
-//                            if imageData.count != 0 {
-//                                saveImage()
-//
-//                            }
-
                             
                             //Clear TextField
                             tempIn = ""
@@ -209,44 +204,9 @@ struct ContentView: View {
         model.getData()
        
     }
+    }
     
-//MARK: Func SAVE IMG ----------------------------
-//    func saveImage() {
-//
-//        //Make sure that the selected image prop. ins't nil
-//        guard imageData != nil else {
-//            return
-//        }
-//
-//        //Created Referencie
-//        let storageRef = Storage.storage().reference()//(withPeth: "memes/samplePic.jpg")
-//
-//        //Img --> Into Data
-//        let image = imageData!.jpegData(compressionQuality: 0.8)
-//
-//        guard image != nil else {
-//            return
-//        }
-//
-//        //File, path and name
-//        let fileRef = storageRef.child("image/\(UUID().uuidString).jpg")
-//
-//
-//        //upload that data
-//        let uploadTask = fileRef.putData(imageData!, metadata: nil) {
-//            if error == nil && metadata != nil {
-//
-//                //TODO: Save a ref. to the file in Firestore DB
-//            }
-//
-//        }
-//
-//
-//
-//
-//    }
-    
-}
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
@@ -266,7 +226,9 @@ struct ImagePicker : UIViewControllerRepresentable {
         
     }
     
-    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
+    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) ->
+    UIImagePickerController {
+    
         let controller = UIImagePickerController()
         controller.sourceType = source
         controller.delegate = context.coordinator
@@ -288,13 +250,37 @@ struct ImagePicker : UIViewControllerRepresentable {
             self.parent.show.toggle()
         }
         
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info:
+        [UIImagePickerController.InfoKey : Any]) {
             
             let image = info[.originalImage] as! UIImage
             let data = image.pngData()
             self.parent.image = data!
             self.parent.show.toggle()
             
+           
+            //MARK: ------------------------------------------- 2 Attempt ------------------------
+            
+            let storage = Storage.storage()
+            storage.reference().child("Image-X").putData(image.jpegData(compressionQuality: 0.35)!, metadata: nil) { (_, err) in
+                
+                if err != nil{
+                    
+                    print((err?.localizedDescription)!)
+                    return
+                }
+                print(" <<<< SUCCESSSSSSSSSS >>>>")
+            }
+//            parent.show.toggle()
         }
     }
 }
+
+//TODO: -
+/*
+ Rotate Sample Display IMG
+ Creat a Ref. at Storage
+ Save when click instaded just take a picture
+
+ 
+ */
