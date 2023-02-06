@@ -259,7 +259,7 @@ struct ImagePicker : UIViewControllerRepresentable {
             self.parent.show.toggle()
             
            
-            //MARK: ------------------------------------------- 2 Attempt ------------------------
+            //MARK: ------------------------------------------- <<<< 2 >>>> ------------------------
             
             let storage = Storage.storage()
             storage.reference().child("Image-X").putData(image.jpegData(compressionQuality: 0.35)!, metadata: nil) { (_, err) in
@@ -281,6 +281,16 @@ struct ImagePicker : UIViewControllerRepresentable {
  Rotate Sample Display IMG
  Creat a Ref. at Storage
  Save when click instaded just take a picture
-
- 
  */
+
+
+
+/* 1) Google docs recommend using the application delegate before we use cloud storage. It's what we discussed on friday and is commented out in the main swift file. It may be giving you trouble.
+ 
+ 2) You're using ActionSheet, a feature that has been deprecated as per apple documentation. You may need to replace it with a confirmation dialog, or something else.
+S---> Modal/Menu Context/Alert
+ 
+ 3) I'm curious as to why you're converting image into jpegData when you already converted into pngData before.
+ 
+ 4) Maybe we're missing something, or it's a path issue, we'll figure it out...Great work!
+*/
