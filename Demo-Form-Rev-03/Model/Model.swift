@@ -13,5 +13,7 @@ struct Model: Identifiable {
     var tempIn: String
     var tempOut: String
     var comments: String
+    
+    // FireBase Auth
         
 }
