@@ -7,6 +7,8 @@
 
 import SwiftUI
 import Firebase
+//import FirebaseFirestore
+import FirebaseStorage
 
 struct ContentView: View {
     
@@ -93,24 +95,24 @@ struct ContentView: View {
                             VStack {
                                 Spacer()
                                 HStack(spacing: 40){
-                                    //IMAGE Place Holder
-//                                    if imageData.count != 0 {
-//                                        Image(uiImage:UIImage(data: self.imageData)!)
-//                                            .resizable()
-//                                            .clipShape(Rectangle())
-//                                            .frame(width: 200, height: 200)
-//                                            .overlay(Rectangle().stroke(Color.gray, lineWidth: 3))
-//                                            .foregroundColor(Color.purple)
+//                                    IMAGE Place Holder
+                                    if imageData.count != 0 {
+                                        Image(uiImage:UIImage(data: self.imageData)!)
+                                            .resizable()
+                                            .clipShape(Rectangle())
+                                            .frame(width: 200, height: 200)
+                                            .overlay(Rectangle().stroke(Color.gray, lineWidth: 3))
+                                            .foregroundColor(Color.purple)
                                         
-//                                    } else {
-//                                        Image(systemName: "person.fill")
-//                                            .resizable()
-//                                            .clipShape(Rectangle())
-//                                            .frame(width: 160, height: 160
-//                                            )
-//                                            .overlay(Rectangle().stroke(Color.gray, lineWidth: 3))
-//                                            .foregroundColor(Color.gray)
-//                                    }
+                                    } else {
+                                        Image(systemName: "person.fill")
+                                            .resizable()
+                                            .clipShape(Rectangle())
+                                            .frame(width: 160, height: 160
+                                            )
+                                            .overlay(Rectangle().stroke(Color.gray, lineWidth: 3))
+                                            .foregroundColor(Color.gray)
+                                    }
 
 
 // Button Camera
@@ -167,6 +169,12 @@ struct ContentView: View {
                             
                             //Call
                             model.addData(tempIn: tempIn, tempOut: tempOut, comments: comments)
+               
+                            
+//                            if imageData.count != 0 {
+//                                saveImage()
+//
+//                            }
 
                             
                             //Clear TextField
@@ -194,16 +202,50 @@ struct ContentView: View {
                 
             }
             .padding()
-            
-   
-            
         }
-    }
+      }
     
     init() {
         model.getData()
        
     }
+    
+//MARK: Func SAVE IMG ----------------------------
+//    func saveImage() {
+//
+//        //Make sure that the selected image prop. ins't nil
+//        guard imageData != nil else {
+//            return
+//        }
+//
+//        //Created Referencie
+//        let storageRef = Storage.storage().reference()//(withPeth: "memes/samplePic.jpg")
+//
+//        //Img --> Into Data
+//        let image = imageData!.jpegData(compressionQuality: 0.8)
+//
+//        guard image != nil else {
+//            return
+//        }
+//
+//        //File, path and name
+//        let fileRef = storageRef.child("image/\(UUID().uuidString).jpg")
+//
+//
+//        //upload that data
+//        let uploadTask = fileRef.putData(imageData!, metadata: nil) {
+//            if error == nil && metadata != nil {
+//
+//                //TODO: Save a ref. to the file in Firestore DB
+//            }
+//
+//        }
+//
+//
+//
+//
+//    }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
