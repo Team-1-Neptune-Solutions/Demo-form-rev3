@@ -232,72 +232,76 @@ struct ImagePicker : UIViewControllerRepresentable {
     @Binding var show : Bool
     @Binding var image : Data
     var source : UIImagePickerController.SourceType
-    
-    
+    @Environment(\.presentationMode) var presentationMode
+
     func makeCoordinator() -> ImagePicker.Coordinator {
         return ImagePicker.Coordinator(parent1: self)
-        
     }
-    
-    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) ->
-    UIImagePickerController {
-        
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
         let controller = UIImagePickerController()
         controller.sourceType = source
         controller.delegate = context.coordinator
         return controller
     }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context:                                 UIViewControllerRepresentableContext<ImagePicker>) {
-        
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
+
     }
-    
+
     class Coordinator : NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
         var parent : ImagePicker
         init(parent1 : ImagePicker) {
-            
             parent = parent1
         }
-        
+
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
             self.parent.show.toggle()
-        }
-        
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info:
-                                   [UIImagePickerController.InfoKey : Any]) {
             
+            // ----------------------------------
+            parent.presentationMode.wrappedValue.dismiss()
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             let image = info[.originalImage] as! UIImage
             let data = image.pngData()
-            // public func pngData() -> Data? // return image as PNG. May return nil if image has no CGImageRef or invalid bitmap format
-            
             
             self.parent.image = data!
             self.parent.show.toggle()
-            
-            
-            //Show a dialog message to confirm image saving
-            let alert = UIAlertController(title: "Confirm Image Saving", message: "Are you sure you want to save this image to Firebase Storage?", preferredStyle: .alert)
-            
-            let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
+           
+// Add Dialog Box to confirm or No
+            let alert = UIAlertController(title: "Save Image", message: "Do you want to save this image?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
+                
+//  RUN WHEN CLICK "YES" CONFIRM SAVE ------------------------/
                 let storage = Storage.storage()
                 storage.reference().child("Image-X").putData(image.jpegData(compressionQuality: 0.35)!, metadata: nil) { (_, err) in
-                    if err != nil{
-                        
+                    
+                 
+               
+                    
+                    if err != nil {
                         print((err?.localizedDescription)!)
                         return
                     }
                     print(" <<<< SUCCESSSSSSSSSS >>>>")
                 }
+                self.parent.show.toggle()
+                self.parent.presentationMode.wrappedValue.dismiss()
+                           
+//                ---------------------------------------------/
+            }))
+            alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+
+            guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let sceneWindow = scene.windows.first(where: { $0.isKeyWindow }) else {
+                return
             }
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-                
-            }
-            alert.addAction(saveAction)
-            alert.addAction(cancelAction)
-            UIApplication.shared.windows.first?.rootViewController?.present(alert, animated: true, completion: nil)
+            sceneWindow.rootViewController?.present(alert, animated: true, completion: nil)
         }
     }
 }
+
 
 //TODO: -
 /*
