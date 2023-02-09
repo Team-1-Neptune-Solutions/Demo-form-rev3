@@ -32,30 +32,7 @@ struct ContentView: View {
 //    var metadata = ""
     
     var body: some View {
-    
-        //MARK: Home DISPLAY
         VStack {
-            
-//            List (model.list) { item in
-//                Text(item.first)
-//
-////MARK: Delete Button and Call Delete function
-////                HStack {
-////                    Text(item.first)
-////                    Spacer()
-////                    Button(action: {
-////
-////                        //Delete todo
-////                        model.deleteData(Delete: item)
-////                    }, label: {
-////                        Image(systemName: "minus.circle")
-////                    })
-////
-////                }
-//
-//
-//            }
-            
             Spacer(minLength: 15)
             Text("T-building").font(.largeTitle)
             
@@ -107,7 +84,7 @@ struct ContentView: View {
                                             .frame(width: 200, height: 200)
                                             .overlay(Rectangle().stroke(Color.gray, lineWidth: 3))
                                             .foregroundColor(Color.purple)
-                                        
+                                                                                    
                                     } else {
                                         Image(systemName: "person.fill")
                                             .resizable()
@@ -117,8 +94,6 @@ struct ContentView: View {
                                             .overlay(Rectangle().stroke(Color.gray, lineWidth: 3))
                                             .foregroundColor(Color.gray)
                                     }
-                                    
-                                    
                                     // Button Camera
                                     Button(action: {
                                         self.show.toggle()
@@ -149,8 +124,6 @@ struct ContentView: View {
                             }
                                        
                         }
-                        
-                    
                             Spacer()
                         Text(" Add a comment ")
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -163,10 +136,8 @@ struct ContentView: View {
                             .overlay(Rectangle().stroke(Color.gray, lineWidth: 0.5))
                             .padding(.top )
 
-                        
                             Spacer()
                         Button(action: {
-                            
                             //Call
                             model.addData(tempIn: tempIn, tempOut: tempOut, comments: comments)
                
@@ -175,11 +146,7 @@ struct ContentView: View {
                             tempOut = ""
                             comments = ""
                             self.imageData = Data(capacity: 0)
-                            
-                          
-                            
-                            
-                            // ==================
+                       
                         }, label: {
                             Text("Save")
                             
@@ -202,8 +169,6 @@ struct ContentView: View {
         model.getData()
     }
     }
-    
-
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
@@ -242,7 +207,7 @@ struct ImagePicker : UIViewControllerRepresentable {
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
             self.parent.show.toggle()
             
-            // ----------------------------------
+     
             parent.presentationMode.wrappedValue.dismiss()
         }
 
@@ -283,7 +248,6 @@ struct ImagePicker : UIViewControllerRepresentable {
     }
 }
 
-
 //TODO: -
 /*
  Rotate Sample Display IMG
@@ -291,14 +255,5 @@ struct ImagePicker : UIViewControllerRepresentable {
  Save when click instaded just take a picture to UpLoad
  */
 
-
-
 /* 1) Google docs recommend using the application delegate before we use cloud storage. It's what we discussed on friday and is commented out in the main swift file. It may be giving you trouble.
- 
- //MARK: DONE
- 2) You're using ActionSheet, a feature that has been deprecated as per apple documentation. You may need to replace it with a confirmation dialog, or something else.
-S---> Modal/Menu Context/Alert
- 
- 
-
 */
