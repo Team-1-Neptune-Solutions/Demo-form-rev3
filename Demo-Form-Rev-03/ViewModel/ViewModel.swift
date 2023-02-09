@@ -41,7 +41,9 @@ class ViewModel: ObservableObject {
                             return Model(id: d.documentID,
                                         tempIn: d["tempIn"] as? String ?? " ",
                                         tempOut: d["tempIn"] as? String ?? " ",
-                                        comments: d["comments"] as? String ?? " ")
+                                        comments: d["comments"] as? String ?? " ",
+                                        imageURL: d["imageURL"] as? String ?? " ")
+                        
                             
                             
                         }
@@ -52,19 +54,20 @@ class ViewModel: ObservableObject {
             }
             else {
                 // Handle the error
+                print("there was an error reading")
             }
         }
         
     }
     
     //MARK: ADD DATA to FireBase
-    func addData(tempIn: String, tempOut: String, comments: String ) {
+    func addData(tempIn: String, tempOut: String, comments: String, imageURL: String ) {
         
         // Get a reference to the database
         let db = Firestore.firestore()
         
         //Add a document to a collection
-        db.collection("Equipment").addDocument(data: ["tempIn":tempIn, "tempOut":tempOut, "comments":comments]) { error in
+        db.collection("Equipment").addDocument(data: ["tempIn":tempIn, "tempOut":tempOut, "comments":comments, "imageURL": imageURL]) { error in
             
             // ----------------------------------------------------
             //TODO

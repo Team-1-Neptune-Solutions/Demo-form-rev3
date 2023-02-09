@@ -7,5 +7,9 @@ target 'Demo-Form-Rev-03' do
 
   # Pods for Demo-Form-Rev-03
     pod 'Firebase/Firestore'
+    pod 'Firebase/Storage'
+    pod 'Firebase/Core'
+    pod 'Firebase/Auth'
+    pod "GoogleUtilities"
 
 end
