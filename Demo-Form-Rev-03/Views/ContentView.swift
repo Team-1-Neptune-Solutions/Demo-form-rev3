@@ -86,15 +86,13 @@ struct ContentView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
             
-                
-                
+               
                 //MARK: IMMAGE PLACE HOLDER + BUTTON
-                
-                NavigationView{
-                    
+                NavigationStack{
                 VStack{
                     VStack {
                         ZStack{
+// I kept this code because we will have versions older than 16 on the iPhone base.
                             NavigationLink(destination: ImagePicker(show: $imagepicker, image: $imageData, source: source), isActive: $imagepicker) {
                                 Text(" ")
                             }
@@ -127,29 +125,11 @@ struct ContentView: View {
                                         isConfirming = true
                                     }) {
                                         Image(systemName: "camera.fill")
-                                        //Text("Take a Photo!!")
                                             .resizable()
-                                        //.scaledToFit()
-                                        // Camera Image Color                   .foregroundColor(Color.)
                                             .frame(width: 40, height: 40, alignment: .center)
                                     }
                                 }
                             }
-                            
-//                            .confirmationDialog(isPresented: $show,titleVisibility: true, presenting: self, actions: [
-//                                ConfirmationAction(title: "Photo Library", action: {
-//                                    self.source = .photoLibrary
-//                                    self.imagepicker.toggle()
-//                                }),
-//                                confirmationAction(title: "Camera", action: {
-//                                    self.source = .camera
-//                                    self.imagepicker.toggle()
-//                                }),
-//                                ConfirmationAction(title: "Cnacel", action: {
-//                                    self.source = .camera
-//                                })
-//                            ], message: Text("tal"))
-                            
                             
                             .confirmationDialog(Text("Take a photo or select from Library"), isPresented: $isConfirming)
                             {
@@ -190,12 +170,16 @@ struct ContentView: View {
                             //Call
                             model.addData(tempIn: tempIn, tempOut: tempOut, comments: comments)
                
-                            
                             //Clear TextField
                             tempIn = ""
                             tempOut = ""
                             comments = ""
+                            self.imageData = Data(capacity: 0)
                             
+                          
+                            
+                            
+                            // ==================
                         }, label: {
                             Text("Save")
                             
@@ -276,10 +260,7 @@ struct ImagePicker : UIViewControllerRepresentable {
 //  RUN WHEN CLICK "YES" CONFIRM SAVE ------------------------/
                 let storage = Storage.storage()
                 storage.reference().child("Image-X").putData(image.jpegData(compressionQuality: 0.35)!, metadata: nil) { (_, err) in
-                    
-                 
-               
-                    
+
                     if err != nil {
                         print((err?.localizedDescription)!)
                         return
@@ -310,12 +291,14 @@ struct ImagePicker : UIViewControllerRepresentable {
  Save when click instaded just take a picture to UpLoad
  */
 
+
+
 /* 1) Google docs recommend using the application delegate before we use cloud storage. It's what we discussed on friday and is commented out in the main swift file. It may be giving you trouble.
  
+ //MARK: DONE
  2) You're using ActionSheet, a feature that has been deprecated as per apple documentation. You may need to replace it with a confirmation dialog, or something else.
 S---> Modal/Menu Context/Alert
  
- 3) I'm curious as to why you're converting image into jpegData when you already converted into pngData before.
  
- 4) Maybe we're missing something, or it's a path issue, we'll figure it out...Great work!
+
 */
