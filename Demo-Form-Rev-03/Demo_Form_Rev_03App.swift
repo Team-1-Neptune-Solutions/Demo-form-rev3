@@ -24,9 +24,16 @@ struct Demo_Form_Rev_03App: App {
     }
 }
 
+//class AppDelegate: NSObject, UIApplicationDelegate {
+//  func application(_ application: UIApplication,didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+//    FirebaseApp.configure()
+//    return true
+//  }
+//}
+
 //@main
 //struct firebaseLoginDemoApp: App {
-//     register app delegate for Firebase setup
+    // register app delegate for Firebase setup
 //      @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
   
 
