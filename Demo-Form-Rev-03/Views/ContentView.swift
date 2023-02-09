@@ -26,6 +26,8 @@ struct ContentView: View {
     @State var note = ""
     @State var description = ""
     
+    @State var isConfirming = false
+        
 //    var error = ""
 //    var metadata = ""
     
@@ -83,6 +85,7 @@ struct ContentView: View {
                     TextField("tempOut", text: $tempOut)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
+            
                 
                 
                 //MARK: IMMAGE PLACE HOLDER + BUTTON
@@ -98,7 +101,7 @@ struct ContentView: View {
                             VStack {
                                 Spacer()
                                 HStack(spacing: 40){
-//                                    IMAGE Place Holder
+                                    //                                    IMAGE Place Holder
                                     if imageData.count != 0 {
                                         Image(uiImage:UIImage(data: self.imageData)!)
                                             .resizable()
@@ -116,39 +119,55 @@ struct ContentView: View {
                                             .overlay(Rectangle().stroke(Color.gray, lineWidth: 3))
                                             .foregroundColor(Color.gray)
                                     }
-
-
-// Button Camera
+                                    
+                                    
+                                    // Button Camera
                                     Button(action: {
                                         self.show.toggle()
+                                        isConfirming = true
                                     }) {
                                         Image(systemName: "camera.fill")
                                         //Text("Take a Photo!!")
                                             .resizable()
                                         //.scaledToFit()
-// Camera Image Color                   .foregroundColor(Color.)
+                                        // Camera Image Color                   .foregroundColor(Color.)
                                             .frame(width: 40, height: 40, alignment: .center)
-                                        
                                     }
                                 }
                             }
-                            .actionSheet(isPresented: $show) {
-                                ActionSheet(title: Text("Take a photo or select from Library"), message: Text(" "), buttons:
-                                                [.default(Text("Photo Library "), action: {
+                            
+//                            .confirmationDialog(isPresented: $show,titleVisibility: true, presenting: self, actions: [
+//                                ConfirmationAction(title: "Photo Library", action: {
+//                                    self.source = .photoLibrary
+//                                    self.imagepicker.toggle()
+//                                }),
+//                                confirmationAction(title: "Camera", action: {
+//                                    self.source = .camera
+//                                    self.imagepicker.toggle()
+//                                }),
+//                                ConfirmationAction(title: "Cnacel", action: {
+//                                    self.source = .camera
+//                                })
+//                            ], message: Text("tal"))
+                            
+                            
+                            .confirmationDialog(Text("Take a photo or select from Library"), isPresented: $isConfirming)
+                            {
+                                Button{
+                                    self.source = .camera
+                                    self.imagepicker.toggle()
+                                } label: {
+                                    Text(" Camera ")
+                                }
+                                Button{
                                     self.source = .photoLibrary
                                     self.imagepicker.toggle()
-                                }),.default(Text("Camera"), action: {
-                                    self.source = .camera
-                                    self.imagepicker.toggle()
-                                }),.default(Text("Cancel"), action: {
-                                    self.source = .camera
-                                    
-                                })
-                                                ]
-                                            
-                                )
+                                } label: {
+                                    Text(" Album Library")
+                                }
+                                
                             }
-                            
+                                       
                         }
                         
                     
@@ -185,16 +204,11 @@ struct ContentView: View {
                             .background(Color .blue)
                             .foregroundColor(.white)
                             .font(.headline)
-                             
-                                
-                            
+ 
                         }
                     }
                 
                 }
-            
-                
-                
             }
             .padding()
         }
@@ -202,7 +216,6 @@ struct ContentView: View {
     
     init() {
         model.getData()
-       
     }
     }
     
@@ -228,7 +241,7 @@ struct ImagePicker : UIViewControllerRepresentable {
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) ->
     UIImagePickerController {
-    
+        
         let controller = UIImagePickerController()
         controller.sourceType = source
         controller.delegate = context.coordinator
@@ -236,7 +249,7 @@ struct ImagePicker : UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: UIImagePickerController, context:                                 UIViewControllerRepresentableContext<ImagePicker>) {
-
+        
     }
     
     class Coordinator : NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -251,27 +264,37 @@ struct ImagePicker : UIViewControllerRepresentable {
         }
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info:
-        [UIImagePickerController.InfoKey : Any]) {
+                                   [UIImagePickerController.InfoKey : Any]) {
             
             let image = info[.originalImage] as! UIImage
             let data = image.pngData()
+            // public func pngData() -> Data? // return image as PNG. May return nil if image has no CGImageRef or invalid bitmap format
+            
+            
             self.parent.image = data!
             self.parent.show.toggle()
             
-           
-            //MARK: ------------------------------------------- <<<< 2 >>>> ------------------------
             
-            let storage = Storage.storage()
-            storage.reference().child("Image-X").putData(image.jpegData(compressionQuality: 0.35)!, metadata: nil) { (_, err) in
-                
-                if err != nil{
-                    
-                    print((err?.localizedDescription)!)
-                    return
+            //Show a dialog message to confirm image saving
+            let alert = UIAlertController(title: "Confirm Image Saving", message: "Are you sure you want to save this image to Firebase Storage?", preferredStyle: .alert)
+            
+            let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
+                let storage = Storage.storage()
+                storage.reference().child("Image-X").putData(image.jpegData(compressionQuality: 0.35)!, metadata: nil) { (_, err) in
+                    if err != nil{
+                        
+                        print((err?.localizedDescription)!)
+                        return
+                    }
+                    print(" <<<< SUCCESSSSSSSSSS >>>>")
                 }
-                print(" <<<< SUCCESSSSSSSSSS >>>>")
             }
-//            parent.show.toggle()
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                
+            }
+            alert.addAction(saveAction)
+            alert.addAction(cancelAction)
+            UIApplication.shared.windows.first?.rootViewController?.present(alert, animated: true, completion: nil)
         }
     }
 }
@@ -279,11 +302,9 @@ struct ImagePicker : UIViewControllerRepresentable {
 //TODO: -
 /*
  Rotate Sample Display IMG
- Creat a Ref. at Storage
- Save when click instaded just take a picture
+ Creat. Ref. at Storage
+ Save when click instaded just take a picture to UpLoad
  */
-
-
 
 /* 1) Google docs recommend using the application delegate before we use cloud storage. It's what we discussed on friday and is commented out in the main swift file. It may be giving you trouble.
  
