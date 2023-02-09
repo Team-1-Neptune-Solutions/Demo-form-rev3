@@ -252,7 +252,6 @@ struct ImagePicker : UIViewControllerRepresentable {
 /*
  Rotate Sample Display IMG
  Creat. Ref. at Storage
- Save when click instaded just take a picture to UpLoad
  */
 
 /* 1) Google docs recommend using the application delegate before we use cloud storage. It's what we discussed on friday and is commented out in the main swift file. It may be giving you trouble.
