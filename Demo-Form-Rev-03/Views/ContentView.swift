@@ -27,6 +27,9 @@ struct ContentView: View {
     @State var description = ""
     
     @State var isConfirming = false
+    //State to track if the image is saved to Cloud Storage
+    @State var imageSaved : Bool = false
+    @State var downloadLink : String = ""
         
 //    var error = ""
 //    var metadata = ""
@@ -39,7 +42,6 @@ struct ContentView: View {
             VStack(spacing: 10) {
                 Text("Pump 1")
                     .offset(x: -155)
-                    .fontWeight(.bold)
                     
                 
                 HStack(spacing: 140){
@@ -70,7 +72,7 @@ struct ContentView: View {
                     VStack {
                         ZStack{
 // I kept this code because we will have versions older than 16 on the iPhone base.
-                            NavigationLink(destination: ImagePicker(show: $imagepicker, image: $imageData, source: source), isActive: $imagepicker) {
+                            NavigationLink(destination: ImagePicker(show: $imagepicker, image: $imageData,imageSaved: $imageSaved, downloadLink: $downloadLink, source: source), isActive: $imagepicker) {
                                 Text(" ")
                             }
                             VStack {
@@ -120,14 +122,12 @@ struct ContentView: View {
                                 } label: {
                                     Text(" Album Library")
                                 }
-                                
                             }
                                        
                         }
                             Spacer()
                         Text(" Add a comment ")
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .fontWeight(.bold)
                             .offset(x: 5)
                         
                         TextField("Type here:", text: $comments)
@@ -139,7 +139,7 @@ struct ContentView: View {
                             Spacer()
                         Button(action: {
                             //Call
-                            model.addData(tempIn: tempIn, tempOut: tempOut, comments: comments)
+                            model.addData(tempIn: tempIn, tempOut: tempOut, comments: comments, imageURL: downloadLink)
                
                             //Clear TextField
                             tempIn = ""
@@ -150,12 +150,12 @@ struct ContentView: View {
                         }, label: {
                             Text("Save")
                             
-                        }) .padding()
+                        }).disabled(!imageSaved)
+                            .padding()
                             .frame(width: 120)
-                            .background(Color .blue)
+                            .background(imageSaved ? .blue : .gray )
                             .foregroundColor(.white)
                             .font(.headline)
- 
                         }
                     }
                 
@@ -180,6 +180,8 @@ struct ContentView_Previews: PreviewProvider {
 struct ImagePicker : UIViewControllerRepresentable {
     @Binding var show : Bool
     @Binding var image : Data
+    @Binding var imageSaved : Bool
+    @Binding var downloadLink : String
     var source : UIImagePickerController.SourceType
     @Environment(\.presentationMode) var presentationMode
 
@@ -224,12 +226,23 @@ struct ImagePicker : UIViewControllerRepresentable {
                 
 //  RUN WHEN CLICK "YES" CONFIRM SAVE ------------------------/
                 let storage = Storage.storage()
-                storage.reference().child("Image-X").putData(image.jpegData(compressionQuality: 0.35)!, metadata: nil) { (_, err) in
+                let ref = storage.reference().child(Date().description)
+                ref.putData(image.jpegData(compressionQuality: 0.35)!, metadata: nil) { (_, err) in
 
                     if err != nil {
                         print((err?.localizedDescription)!)
                         return
                     }
+                    ref.downloadURL{ url,error in
+                        if let error{
+                            print("couldn't save image to storage, try again\(error)")
+                            return
+                        }
+                        
+                        self.parent.imageSaved = true
+                        self.parent.downloadLink = url?.absoluteString ?? ""
+                    }
+                    
                     print(" <<<< SUCCESSSSSSSSSS >>>>")
                 }
                 self.parent.show.toggle()
