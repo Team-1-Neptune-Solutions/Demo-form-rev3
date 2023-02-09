@@ -84,6 +84,7 @@ struct ContentView: View {
                                             .frame(width: 200, height: 200)
                                             .overlay(Rectangle().stroke(Color.gray, lineWidth: 3))
                                             .foregroundColor(Color.purple)
+                                            .rotationEffect(.degrees(90))
                                                                                     
                                     } else {
                                         Image(systemName: "person.fill")
@@ -93,6 +94,7 @@ struct ContentView: View {
                                             )
                                             .overlay(Rectangle().stroke(Color.gray, lineWidth: 3))
                                             .foregroundColor(Color.gray)
+//                                            .rotationEffect(.degrees(90))
                                     }
                                     // Button Camera
                                     Button(action: {
