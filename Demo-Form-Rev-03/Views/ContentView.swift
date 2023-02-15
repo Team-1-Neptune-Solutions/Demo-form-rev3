@@ -221,7 +221,7 @@ struct ImagePicker : UIViewControllerRepresentable {
             self.parent.show.toggle()
            
 // Add Dialog Box to confirm or No
-            let alert = UIAlertController(title: "Save Image", message: "Do you want to save this image?", preferredStyle: .alert)
+            let alert = UIAlertController(title: " Confirmation ", message: "", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
                 
 //  RUN WHEN CLICK "YES" CONFIRM SAVE ------------------------/
@@ -250,7 +250,7 @@ struct ImagePicker : UIViewControllerRepresentable {
                            
 //                ---------------------------------------------/
             }))
-            alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+//            alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
 
             guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                   let sceneWindow = scene.windows.first(where: { $0.isKeyWindow }) else {
@@ -264,7 +264,7 @@ struct ImagePicker : UIViewControllerRepresentable {
 //TODO: -
 /*
  Rotate Sample Display IMG
- Creat. Ref. at Storage
+ Creat. Ref. at Storage --> Done
  */
 
 /* 1) Google docs recommend using the application delegate before we use cloud storage. It's what we discussed on friday and is commented out in the main swift file. It may be giving you trouble.
